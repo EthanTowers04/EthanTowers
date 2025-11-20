@@ -1,0 +1,51 @@
+% This template has been downloaded from:
+% https://github.com/posquit0/Awesome-CV
+
+% Template license:
+% CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+\documentclass[11pt, a4paper]{awesome-cv}
+\usepackage{xcolor}
+\definecolor{myblue}{rgb}{0.2, 0.6, 1.0}
+
+
+\geometry{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}
+\fontdir[fonts/]
+
+% Color for highlights
+% Awesome Colors: awesome-emerald, awesome-skyblue, awesome-red, awesome-pink, awesome-orange
+%                 awesome-nephritis, awesome-concrete, awesome-darknight
+\colorlet{awesome}{myblue}
+\setbool{acvSectionColorHighlight}{false}
+
+\renewcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
+
+\name{Ethan}{Towers}
+\position{Student{\enskip\cdotp\enskip}Royal Holloway}
+\address{London/Slough Based}
+
+\mobile{(+44)7477 601398}
+\email{Ethan.towers@hotmail.com}
+\github{https://github.com/EthanTowers04}
+\linkedin{https://www.linkedin.com/in/ethan-towers-0911032b1}
+
+\begin{document}
+
+% Print the header with above personal informations
+% Give optional argument to change alignment(C: center, L: left, R: right)
+\makecvheader[C]
+
+% Print the footer with 3 arguments(<left>, <center>, <right>)
+% Leave any of these blank if they are not needed
+\makecvfooter
+  {\today}
+  {Ethan Towers~~~·~~~Curriculum Vitae}
+  {Last Updated: 20/11/2025}
+
+\input{cv/summary.tex}
+\input{cv/skills.tex}
+\input{cv/education.tex}
+\input{cv/experience.tex}
+\input{cv/projects.tex}
+\input{cv/interests.tex}
+
+\end{document}
