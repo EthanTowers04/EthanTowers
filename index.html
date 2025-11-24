@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ethan Towers — CV</title>
 
 <!-- PDF.js Library -->
@@ -30,6 +30,8 @@
         display: block;
         margin: 30px auto;
         border: 1px solid #ddd;
+        width: 100%;
+        height: auto;
     }
     #download-link {
         text-align: center;
@@ -47,115 +49,89 @@
     #download-link a:hover {
         background: #0059c9;
     }
+
+    #loading {
+        text-align: center;
+        color: #333;
+    }
+
+    #error {
+        text-align: center;
+        color: #b00020;
+    }
 </style>
 </head>
 <body>
 
 <h1>Ethan Towers — CV</h1>
 
-<div id="pdf-viewer"></div>
-
-<div id="download-link">
-    <a href="Ethan-Towers-CV.pdf" download>Download CV (PDF)</a>
+<div id="pdf-viewer">
+    <div id="loading">Loading preview…</div>
 </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ethan Towers — CV</title>
-
-<!-- PDF.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
-
-<style>
-    body {
-        font-family: sans-serif;
-        background: #f7f7f7;
-        margin: 0;
-        padding: 20px;
-    }
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    #pdf-viewer {
-        max-width: 900px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    }
-    canvas {
-        display: block;
-        margin: 30px auto;
-        border: 1px solid #ddd;
-    }
-    #download-link {
-        text-align: center;
-        margin-top: 30px;
-    }
-    #download-link a {
-        display: inline-block;
-        padding: 12px 20px;
-        background: #0070f3;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 16px;
-    }
-    #download-link a:hover {
-        background: #0059c9;
-    }
-</style>
-</head>
-<body>
-
-<h1>Ethan Towers — CV</h1>
-
-<div id="pdf-viewer"></div>
-
 <div id="download-link">
-    <a href="Ethan-Towers-CV.pdf" download>Download CV (PDF)</a>
+    <a id="download-anchor" href="Ethan-Towers-CV.pdf" download>Download CV (PDF)</a>
 </div>
 
 <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
+    if (window.pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
+    }
 
     const url = "Ethan-Towers-CV.pdf";
 
     async function renderPDF() {
-        const pdf = await pdfjsLib.getDocument(url).promise;
         const viewer = document.getElementById("pdf-viewer");
+        const loadingEl = document.getElementById("loading");
+        loadingEl && (loadingEl.textContent = "Loading preview…");
 
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            const page = await pdf.getPage(pageNum);
-            const scale = 1.4;
-            const viewport = page.getViewport({ scale });
+        if (!window.pdfjsLib) {
+            viewer.innerHTML = '<div id="error">PDF.js failed to load.</div>';
+            return;
+        }
 
-            const canvas = document.createElement("canvas");
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+        try {
+            const loadingTask = pdfjsLib.getDocument(url);
+            const pdf = await loadingTask.promise;
 
-            const context = canvas.getContext("2d");
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            viewer.innerHTML = "";
 
-            viewer.appendChild(canvas); 
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const pageWrapper = document.createElement("div");
+                pageWrapper.style.marginBottom = "20px";
+                const containerWidth = Math.min(viewer.clientWidth, 900) - 40; 
+                const unscaledViewport = page.getViewport({ scale: 1 });
+                const desiredScale = Math.max(0.5, containerWidth / unscaledViewport.width);
+
+                const viewport = page.getViewport({ scale: desiredScale });
+                const outputScale = window.devicePixelRatio || 1;
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+
+                canvas.style.width = Math.floor(viewport.width) + "px";
+                canvas.style.height = Math.floor(viewport.height) + "px";
+
+                canvas.width = Math.floor(viewport.width * outputScale);
+                canvas.height = Math.floor(viewport.height * outputScale);
+                context.setTransform(outputScale, 0, 0, outputScale, 0, 0);
+
+                await page.render({ canvasContext: context, viewport }).promise;
+
+                pageWrapper.appendChild(canvas);
+                viewer.appendChild(pageWrapper);
+            }
+        } catch (err) {
+            console.error("Error rendering PDF:", err);
+            viewer.innerHTML = "<div id='error'>Failed to load PDF preview. You can still download the file below.</div>";
         }
     }
 
-    renderPDF().catch(err => {
-        console.error("Error rendering PDF:", err);
-        const viewer = document.getElementById("pdf-viewer");
-        viewer.innerHTML = "<p style='color:red; text-align:center;'>Failed to load PDF preview.</p>";
-    });
+    // Run render
+    renderPDF();
 </script>
-
-</body>
-</html>
-
 
 </body>
 </html>
