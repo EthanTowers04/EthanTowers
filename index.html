@@ -1,34 +1,93 @@
-<div id="cv-container" style="width:100%; max-width:900px; margin:auto;">
-    <!-- Embedded CV -->
-    <iframe 
-        id="cv-frame"
-        src="Ethan-Towers-CV.pdf"
-        width="100%"
-        height="900px"
-        style="border:none;">
-    </iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethan Towers — CV</title>
 
-    <!-- Fallback Button -->
-    <div id="cv-fallback" style="display:none; text-align:center; margin-top:20px;">
-        <p>Your browser couldn't display the CV.</p>
-        <a href="Ethan-Towers-CV.pdf" download>
-            <button style="padding:10px 20px; font-size:16px; cursor:pointer;">
-                Download CV (PDF)
-            </button>
-        </a>
-    </div>
-</div>
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
 
-<script>
-    setTimeout(() => {
-        const iframe = document.getElementById('cv-frame');
-        const fallback = document.getElementById('cv-fallback');
-        try {
-            if (!iframe.contentDocument || iframe.contentDocument.body.childElementCount === 0) {
-                fallback.style.display = "block";
-            }
-        } catch (err) {
-          fallback.style.display = "block";
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 20px;
         }
-    }, 800); 
-</script>
+
+        #pdf-viewer {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            display: block;
+            margin: 30px auto;
+            border: 1px solid #ddd;
+        }
+
+        #download-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #download-link a {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #0070f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        #download-link a:hover {
+            background: #0059c9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 style="text-align:center;">Ethan Towers — CV</h1>
+
+    <div id="pdf-viewer">
+        <!-- PDF pages will be injected here -->
+    </div>
+
+    <div id="download-link">
+        <a href="Ethan-Towers-CV.pdf" download>Download CV (PDF)</a>
+    </div>
+
+    <script>
+        const url = "Ethan-Towers-CV.pdf"; 
+        pdfjsLib.getDocument(url).promise.then(function (pdf) {
+            const viewer = document.getElementById("pdf-viewer");
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                pdf.getPage(pageNum).then(function (page) {
+                    const scale = 1.4;
+                    const viewport = page.getViewport({ scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    viewer.appendChild(canvas);
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
