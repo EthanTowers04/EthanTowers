@@ -13,10 +13,11 @@
             --radius:12px;
             --max-width:1000px;
         }
-        html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#111827}
-        .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:36px}
-        .card{width:100%;max-width:var(--max-width);background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(17,24,39,0.08);overflow:hidden}
-        .card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #eef2f7}
+        html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#111827;box-sizing:border-box}
+        body {overflow:hidden}
+        .page{height:100vh;display:flex;align-items:center;justify-content:center;padding:12px}
+        .card{width:100%;max-width:var(--max-width);background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(17,24,39,0.08);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 24px);max-height:100vh}
+        .card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef2f7;min-height:64px}
         .title{display:flex;flex-direction:column}
         .title h1{margin:0;font-size:20px;letter-spacing:-0.2px}
         .title p{margin:3px 0 0;font-size:13px;color:var(--muted)}
@@ -24,9 +25,8 @@
         .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none}
         .btn.primary{background:linear-gradient(90deg,var(--accent),#0063e6);color:#fff;border-color:transparent}
         .btn.ghost{background:transparent;color:var(--muted)}
-        .viewer-wrap{position:relative;background:#fafafa}
-        #cv-frame{width:100%;height:calc(80vh);border:0;display:block}
-        /* loading spinner */
+        .viewer-wrap{position:relative;background:#fafafa;flex:1;min-height:0;display:flex;flex-direction:column}
+        #cv-frame{width:100%;height:100%;border:0;display:block;flex:1}
         .spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));backdrop-filter:blur(2px)}
         .spinner .dot{width:12px;height:12px;margin:6px;border-radius:50%;background:var(--accent);animation:spin 1s linear infinite}
         @keyframes spin{0%{transform:scale(0.6)}50%{transform:scale(1)}100%{transform:scale(0.6)}}
@@ -41,7 +41,7 @@
             <div class="card-header">
                 <div class="title">
                     <h1>Ethan Towers — CV</h1>
-                    <p>Preview and download my résumé</p>
+                    <p>Preview and download my Curriculum Vitae</p>
                 </div>
                 <div class="toolbar">
                     <a class="btn ghost" href="Ethan-Towers-CV.pdf" target="_blank" rel="noopener">Open in new tab</a>
@@ -74,9 +74,7 @@
             const spinner = document.getElementById('cv-spinner');
             const fallback = document.getElementById('cv-fallback');
 
-            // Hide spinner when iframe loads successfully
             iframe.addEventListener('load', function(){
-                // try to detect usable content inside iframe; cross-origin will throw
                 try{
                     const doc = iframe.contentDocument || iframe.contentWindow.document;
                     if (doc && doc.body && doc.body.childElementCount > 0) {
@@ -85,20 +83,16 @@
                         return;
                     }
                 }catch(e){
-                    // cross-origin or viewer used — treat as success if no error thrown by browser
                     spinner.style.display = 'none';
                     fallback.style.display = 'none';
                     return;
                 }
-                // otherwise show fallback
                 spinner.style.display = 'none';
                 fallback.style.display = 'block';
             });
 
-            // After a short timeout, if iframe didn't load, show fallback
             setTimeout(function(){
                 if (spinner.style.display !== 'none'){
-                    // If the iframe hasn't fired load yet, show fallback so user can still download
                     spinner.style.display = 'none';
                     fallback.style.display = 'block';
                 }
