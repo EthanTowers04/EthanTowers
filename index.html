@@ -1,34 +1,109 @@
-<div id="cv-container" style="width:100%; max-width:900px; margin:auto;">
-    <!-- Embedded CV -->
-    <iframe 
-        id="cv-frame"
-        src="Ethan-Towers-CV.pdf"
-        width="100%"
-        height="900px"
-        style="border:none;">
-    </iframe>
-
-    <!-- Fallback Button -->
-    <div id="cv-fallback" style="display:none; text-align:center; margin-top:20px;">
-        <p>Your browser couldn't display the CV.</p>
-        <a href="Ethan-Towers-CV.pdf" download>
-            <button style="padding:10px 20px; font-size:16px; cursor:pointer;">
-                Download CV (PDF)
-            </button>
-        </a>
-    </div>
-</div>
-
-<script>
-    setTimeout(() => {
-        const iframe = document.getElementById('cv-frame');
-        const fallback = document.getElementById('cv-fallback');
-        try {
-            if (!iframe.contentDocument || iframe.contentDocument.body.childElementCount === 0) {
-                fallback.style.display = "block";
-            }
-        } catch (err) {
-          fallback.style.display = "block";
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ethan Towers — CV</title>
+    <style>
+        :root{
+            --bg:#f4f7fb;
+            --card:#ffffff;
+            --accent:#0a66ff;
+            --muted:#6b7280;
+            --radius:12px;
+            --max-width:1000px;
         }
-    }, 800); 
-</script>
+        html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#111827}
+        .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:36px}
+        .card{width:100%;max-width:var(--max-width);background:var(--card);border-radius:var(--radius);box-shadow:0 8px 30px rgba(17,24,39,0.08);overflow:hidden}
+        .card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #eef2f7}
+        .title{display:flex;flex-direction:column}
+        .title h1{margin:0;font-size:20px;letter-spacing:-0.2px}
+        .title p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+        .toolbar{display:flex;gap:10px;align-items:center}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none}
+        .btn.primary{background:linear-gradient(90deg,var(--accent),#0063e6);color:#fff;border-color:transparent}
+        .btn.ghost{background:transparent;color:var(--muted)}
+        .viewer-wrap{position:relative;background:#fafafa}
+        #cv-frame{width:100%;height:calc(80vh);border:0;display:block}
+        /* loading spinner */
+        .spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));backdrop-filter:blur(2px)}
+        .spinner .dot{width:12px;height:12px;margin:6px;border-radius:50%;background:var(--accent);animation:spin 1s linear infinite}
+        @keyframes spin{0%{transform:scale(0.6)}50%{transform:scale(1)}100%{transform:scale(0.6)}}
+        .fallback{padding:22px;text-align:center;color:var(--muted)}
+        .download-link{display:inline-block;padding:10px 16px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none;margin-top:10px}
+        @media (max-width:640px){.card{border-radius:10px}.title h1{font-size:18px}.toolbar{gap:8px}}
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="card" role="main">
+            <div class="card-header">
+                <div class="title">
+                    <h1>Ethan Towers — CV</h1>
+                    <p>Preview and download my résumé</p>
+                </div>
+                <div class="toolbar">
+                    <a class="btn ghost" href="Ethan-Towers-CV.pdf" target="_blank" rel="noopener">Open in new tab</a>
+                    <a class="btn primary" href="Ethan-Towers-CV.pdf" download>Download PDF</a>
+                </div>
+            </div>
+
+            <div class="viewer-wrap" id="viewer-wrap">
+                <div class="spinner" id="cv-spinner" aria-hidden="false">
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <div class="dot"></div>
+                        <div class="dot" style="animation-delay:.15s"></div>
+                        <div class="dot" style="animation-delay:.3s"></div>
+                    </div>
+                </div>
+
+                <iframe id="cv-frame" src="Ethan-Towers-CV.pdf" title="Ethan Towers CV PDF"></iframe>
+
+                <div class="fallback" id="cv-fallback" style="display:none">
+                    <div>Your browser couldn't display the CV preview.</div>
+                    <a class="download-link" href="Ethan-Towers-CV.pdf" download>Download CV (PDF)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const iframe = document.getElementById('cv-frame');
+            const spinner = document.getElementById('cv-spinner');
+            const fallback = document.getElementById('cv-fallback');
+
+            // Hide spinner when iframe loads successfully
+            iframe.addEventListener('load', function(){
+                // try to detect usable content inside iframe; cross-origin will throw
+                try{
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (doc && doc.body && doc.body.childElementCount > 0) {
+                        spinner.style.display = 'none';
+                        fallback.style.display = 'none';
+                        return;
+                    }
+                }catch(e){
+                    // cross-origin or viewer used — treat as success if no error thrown by browser
+                    spinner.style.display = 'none';
+                    fallback.style.display = 'none';
+                    return;
+                }
+                // otherwise show fallback
+                spinner.style.display = 'none';
+                fallback.style.display = 'block';
+            });
+
+            // After a short timeout, if iframe didn't load, show fallback
+            setTimeout(function(){
+                if (spinner.style.display !== 'none'){
+                    // If the iframe hasn't fired load yet, show fallback so user can still download
+                    spinner.style.display = 'none';
+                    fallback.style.display = 'block';
+                }
+            }, 2500);
+        })();
+    </script>
+</body>
+</html>
