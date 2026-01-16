@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.1 (MiKTeX 24.1) (format=lualatex 2025.12.4)  16 JAN 2026 14:33
+This is LuaHBTeX, Version 1.17.1 (MiKTeX 24.1) (format=lualatex 2025.12.4)  16 JAN 2026 14:40
  restricted system commands enabled.
 **cv
 (./cv.tex
@@ -1041,10 +1041,10 @@ Here is how much of LuaTeX's memory you used:
  646 words of node memory still in use:
    6 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 glyph, 7 attribute, 83 glue_spec,
  7 attribute_list, 2 write nodes
-   avail lists: 1:2,2:1457,3:545,4:451,5:1734,6:208,7:12249,8:1,9:1245,10:25,11:
-819
+   avail lists: 1:2,2:1457,3:545,4:451,5:1734,6:208,7:12205,8:1,9:1245,10:25,11:
+815
  54941 multiletter control sequences out of 65536+600000
- 89 fonts using 26161407 bytes
+ 89 fonts using 26161647 bytes
  116i,11n,114p,554b,554s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <//?/c:/program files/miktex/fonts/opentype/adobe/sourcesanspro/sourcesanspro-se
 mibold.otf><//?/c:/program files/miktex/fonts/opentype/adobe/sourcesanspro/sourc
@@ -1054,7 +1054,7 @@ ourcesanspro/sourcesanspro-bold.otf><./fonts/Roboto-Regular.ttf><C:/Program File
 s/MiKTeX/fonts/opentype/public/fontawesome/fontawesome.otf><./fonts/Roboto-Itali
 c.ttf><//?/c:/program files/miktex/fonts/opentype/adobe/sourcesanspro/sourcesans
 pro-regular.otf><./fonts/Roboto-Bold.ttf><./fonts/Roboto-Thin.ttf>
-Output written on cv.pdf (2 pages, 60578 bytes).
+Output written on cv.pdf (2 pages, 60302 bytes).
 
 PDF statistics: 98 PDF objects out of 1000 (max. 8388607)
  9 named destinations out of 1000 (max. 131072)
